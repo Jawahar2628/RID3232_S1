@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./adminDashboard.css";
-import { overviewDetails } from "./overviewDetails";
-import { detailsReport } from "./detailsReport";
 import Aside from "./Aside";
 import UpdateClub from "./UpdateClub";
 import DeleteClub from "./DeleteClub";
@@ -10,8 +8,37 @@ import "./navbar.css";
 
 export default function AdminDashboard() {
   const [addClubPopUp, setAddClubPopUp] = useState(false);
-  const [updatClub, setUpdateClub] = useState(false);
+  const [updateClub, setUpdateClub] = useState(false);
   const [deleteClub, setDeleteClub] = useState(false);
+  const [overviewDetails, setOverviewDetails] = useState([]);
+  const [detailsReport, setDetailsReport] = useState([]);
+
+  useEffect(() => {
+    // Fetch overview details
+    const fetchOverviewDetails = async () => {
+      try {
+        const response = await fetch('http://localhost:3005/api/v1/club/getAll'); // Replace with your API endpoint
+        const data = await response.json();
+        setOverviewDetails(data);
+      } catch (error) {
+        console.error('Error fetching overview details:', error);
+      }
+    };
+
+    // Fetch details report
+    const fetchDetailsReport = async () => {
+      try {
+        const response = await fetch('http://localhost:3005/api/v1/club/getAll'); // Replace with your API endpoint
+        const data = await response.json();
+        setDetailsReport(data);
+      } catch (error) {
+        console.error('Error fetching details report:', error);
+      }
+    };
+
+    fetchOverviewDetails();
+    fetchDetailsReport();
+  }, []);
 
   return (
     <React.Fragment>
@@ -126,7 +153,7 @@ export default function AdminDashboard() {
         </main>
       </div>
       {addClubPopUp && <AddClub onClose={() => setAddClubPopUp(false)} />}
-      {updatClub && <UpdateClub onClose={() => setUpdateClub(false)} />}
+      {updateClub && <UpdateClub onClose={() => setUpdateClub(false)} />}
       {deleteClub && <DeleteClub onClose={() => setDeleteClub(false)} />}
     </React.Fragment>
   );

@@ -70,121 +70,124 @@ export default function AddProject({ onClose }) {
       venue: "",
     };
 
-    // projectName validation
     if (formData.projectName === "") {
       newErrors.projectName = "Project name is required";
       valid = false;
     }
 
-    // project chairman Name validation
     if (formData.projectChairName === "") {
       newErrors.projectChairName = "Project chairman name is required";
       valid = false;
     }
 
-    // project secretary Name validation
     if (formData.projectSecretaryName === "") {
       newErrors.projectSecretaryName = "Project secretary name is required";
       valid = false;
     }
 
-    // host club validation
     if (formData.hostClubName === "") {
       newErrors.hostClubName = "Host club name is required";
       valid = false;
     }
 
-    // Co-host club validation
     if (formData.coHostClubName === "") {
       newErrors.coHostClubName = "Co-Host club name is required";
       valid = false;
     }
 
-    // project avenue validation
     if (formData.projectAvenue === "") {
       newErrors.projectAvenue = "Project avenue is required";
       valid = false;
     }
 
-    // No.of benifeshier validation
     if (formData.noOfBenifeshiers === "") {
-      newErrors.noOfBenifeshiers = "No.of Benifeshier is required";
+      newErrors.noOfBenifeshiers = "No.of Beneficiaries is required";
       valid = false;
     }
 
-    // speaker validation
     if (formData.speaker === "") {
       newErrors.speaker = "Speaker/Guests is required";
       valid = false;
     }
 
-    // total amount spent validation
     if (formData.totalAmountSpent === "") {
       newErrors.totalAmountSpent = "Total amount spent is required";
       valid = false;
     }
 
-    // project photo link validation
     if (formData.projectPhotoLink === "") {
       newErrors.projectPhotoLink = "Project photo link is required";
       valid = false;
     }
 
-    // project description validation
     if (formData.projectDescription === "") {
       newErrors.projectDescription = "Project description is required";
       valid = false;
     }
 
-    //president validation
     if (formData.presidentName === "") {
       newErrors.presidentName = "President name is required";
+      valid = false;
     }
 
-    //secretary validation
     if (formData.secretaryName === "") {
       newErrors.secretaryName = "Secretary name is required";
+      valid = false;
     }
 
-    // project start month validation
     if (formData.projectStartMonth === "") {
       newErrors.projectStartMonth = "Project start month is required";
       valid = false;
     }
 
-    // project end month validation
     if (formData.projectEndMonth === "") {
       newErrors.projectEndMonth = "Project end month is required";
       valid = false;
     }
 
-    // venue validation
     if (formData.venue === "") {
       newErrors.venue = "Venue is required";
       valid = false;
     }
+
     setFormErrors(newErrors);
     return valid;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (validateForm()) {
-      // Perform form submission here
-      console.log(formData);
-      // Replace console.log with your form submission logic (e.g., API call)
+      try {
+        const response = await fetch('http://localhost:3005/api/v1/projects/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          console.log("Form submitted successfully");
+          onClose();
+        } else {
+          console.error("Error submitting form");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     } else {
       console.log("Form is invalid. Please check the fields.");
     }
   };
+
   return (
     <React.Fragment>
       <div className="form-container">
-        <form onSubmit={validateForm}>
+        <form onSubmit={handleSubmit}>
           <div className="form-top">
             <div className="form-left">
-              <h1>project name</h1>
-              <h4>titles goes here</h4>
+              <h1>Project Name</h1>
+              <h4>Titles go here</h4>
             </div>
             <div className="form-right">
               <span className="material-symbols-outlined" onClick={onClose}>
@@ -194,10 +197,11 @@ export default function AddProject({ onClose }) {
           </div>
           <div className="input-section export">
             <div className="input">
-              <label htmlFor="projectName">project name:</label>
+              <label htmlFor="projectName">Project Name:</label>
               <input
                 type="text"
-                placeholder="enter project name"
+                name="projectName"
+                placeholder="Enter project name"
                 value={formData.projectName}
                 onChange={handleChange}
               />
@@ -206,42 +210,37 @@ export default function AddProject({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="projectChairmanName">
-                project chairman name:
-              </label>
+              <label htmlFor="projectChairName">Project Chairman Name:</label>
               <input
                 type="text"
-                placeholder="enter project chairman name"
+                name="projectChairName"
+                placeholder="Enter project chairman name"
                 value={formData.projectChairName}
                 onChange={handleChange}
               />
               {formErrors.projectChairName && (
-                <span style={{ color: "red" }}>
-                  {formErrors.projectChairName}
-                </span>
+                <span style={{ color: "red" }}>{formErrors.projectChairName}</span>
               )}
             </div>
             <div className="input">
-              <label htmlFor="projectSecretaryName">
-                project secretary name:
-              </label>
+              <label htmlFor="projectSecretaryName">Project Secretary Name:</label>
               <input
                 type="text"
-                placeholder="enter project secretary name"
+                name="projectSecretaryName"
+                placeholder="Enter project secretary name"
                 value={formData.projectSecretaryName}
                 onChange={handleChange}
               />
               {formErrors.projectSecretaryName && (
-                <span style={{ color: "red" }}>
-                  {formErrors.projectSecretaryName}
-                </span>
+                <span style={{ color: "red" }}>{formErrors.projectSecretaryName}</span>
               )}
             </div>
             <div className="input">
-              <label htmlFor="hostClubName">host club name:</label>
+              <label htmlFor="hostClubName">Host Club Name:</label>
               <input
                 type="text"
-                placeholder="enter host club name"
+                name="hostClubName"
+                placeholder="Enter host club name"
                 value={formData.hostClubName}
                 onChange={handleChange}
               />
@@ -250,24 +249,24 @@ export default function AddProject({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="Co-HostClubName">host club name:</label>
+              <label htmlFor="coHostClubName">Co-Host Club Name:</label>
               <input
                 type="text"
-                placeholder="enter Co-Host club name"
+                name="coHostClubName"
+                placeholder="Enter co-host club name"
                 value={formData.coHostClubName}
                 onChange={handleChange}
               />
               {formErrors.coHostClubName && (
-                <span style={{ color: "red" }}>
-                  {formErrors.coHostClubName}
-                </span>
+                <span style={{ color: "red" }}>{formErrors.coHostClubName}</span>
               )}
             </div>
             <div className="input">
-              <label htmlFor="projectAvenue">project avenue:</label>
+              <label htmlFor="projectAvenue">Project Avenue:</label>
               <input
                 type="text"
-                placeholder="enter projec avenue"
+                name="projectAvenue"
+                placeholder="Enter project avenue"
                 value={formData.projectAvenue}
                 onChange={handleChange}
               />
@@ -276,24 +275,24 @@ export default function AddProject({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="noOfBenefishier">no.of benefishier:</label>
+              <label htmlFor="noOfBenifeshiers">No. of Beneficiaries:</label>
               <input
                 type="text"
-                placeholder="enter no.of benefishier"
+                name="noOfBenifeshiers"
+                placeholder="Enter no. of beneficiaries"
                 value={formData.noOfBenifeshiers}
                 onChange={handleChange}
               />
               {formErrors.noOfBenifeshiers && (
-                <span style={{ color: "red" }}>
-                  {formErrors.noOfBenifeshiers}
-                </span>
+                <span style={{ color: "red" }}>{formErrors.noOfBenifeshiers}</span>
               )}
             </div>
             <div className="input">
-              <label htmlFor="speaker">spekaer/Guests:</label>
+              <label htmlFor="speaker">Speaker/Guests:</label>
               <input
                 type="text"
-                placeholder="enter speaker/guests"
+                name="speaker"
+                placeholder="Enter speaker/guests"
                 value={formData.speaker}
                 onChange={handleChange}
               />
@@ -302,24 +301,24 @@ export default function AddProject({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="totalAmountSpent">total amount spent:</label>
+              <label htmlFor="totalAmountSpent">Total Amount Spent:</label>
               <input
                 type="text"
-                placeholder="enter total amount spent"
+                name="totalAmountSpent"
+                placeholder="Enter total amount spent"
                 value={formData.totalAmountSpent}
                 onChange={handleChange}
               />
               {formErrors.totalAmountSpent && (
-                <span style={{ color: "red" }}>
-                  {formErrors.totalAmountSpent}
-                </span>
+                <span style={{ color: "red" }}>{formErrors.totalAmountSpent}</span>
               )}
             </div>
             <div className="input">
-              <label htmlFor="presidentName">president name:</label>
+              <label htmlFor="presidentName">President Name:</label>
               <input
                 type="text"
-                placeholder="enter president name"
+                name="presidentName"
+                placeholder="Enter president name"
                 value={formData.presidentName}
                 onChange={handleChange}
               />
@@ -328,10 +327,11 @@ export default function AddProject({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="secretaryName">secretary name:</label>
+              <label htmlFor="secretaryName">Secretary Name:</label>
               <input
                 type="text"
-                placeholder="enter secretary name"
+                name="secretaryName"
+                placeholder="Enter secretary name"
                 value={formData.secretaryName}
                 onChange={handleChange}
               />
@@ -340,83 +340,72 @@ export default function AddProject({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="project-start-month">
-                project starting month:
-              </label>
+              <label htmlFor="projectStartMonth">Project Starting Month:</label>
               <input
                 type="month"
-                placeholder="enter month"
+                name="projectStartMonth"
+                placeholder="Enter month"
                 value={formData.projectStartMonth}
                 onChange={handleChange}
               />
               {formErrors.projectStartMonth && (
-                <span style={{ color: "red" }}>
-                  {formErrors.projectStartMonth}
-                </span>
+                <span style={{ color: "red" }}>{formErrors.projectStartMonth}</span>
               )}
             </div>
             <div className="input">
-              <label htmlFor="project-end-month">project end month:</label>
+              <label htmlFor="projectEndMonth">Project End Month:</label>
               <input
                 type="month"
-                placeholder="enter month"
+                name="projectEndMonth"
+                placeholder="Enter month"
                 value={formData.projectEndMonth}
                 onChange={handleChange}
               />
               {formErrors.projectEndMonth && (
-                <span style={{ color: "red" }}>
-                  {formErrors.projectEndMonth}
-                </span>
+                <span style={{ color: "red" }}>{formErrors.projectEndMonth}</span>
               )}
             </div>
             <div className="input">
-              <label htmlFor="venue">venue :</label>
+              <label htmlFor="venue">Venue:</label>
               <input
                 type="text"
                 name="venue"
-                className="venue"
+                placeholder="Enter venue"
                 value={formData.venue}
                 onChange={handleChange}
-                placeholder="enter venue"
               />
               {formErrors.venue && (
                 <span style={{ color: "red" }}>{formErrors.venue}</span>
               )}
             </div>
             <div className="input">
-              <label htmlFor="projectPhotoLink">venue :</label>
+              <label htmlFor="projectPhotoLink">Project Photo Link:</label>
               <input
                 type="text"
-                name="venprojectPhotoLinkue"
-                className="projectPhotoLink"
+                name="projectPhotoLink"
+                placeholder="Enter project photo link"
                 value={formData.projectPhotoLink}
                 onChange={handleChange}
-                placeholder="enter project photo link"
               />
               {formErrors.projectPhotoLink && (
-                <span style={{ color: "red" }}>
-                  {formErrors.projectPhotoLink}
-                </span>
+                <span style={{ color: "red" }}>{formErrors.projectPhotoLink}</span>
               )}
             </div>
             <div className="input">
-              <label htmlFor="projectDescription">project description :</label>
+              <label htmlFor="projectDescription">Project Description:</label>
               <textarea
                 name="projectDescription"
-                id="projectDescription"
+                placeholder="Enter project description"
                 value={formData.projectDescription}
                 onChange={handleChange}
-                placeholder="Enter Project Description"
               ></textarea>
               {formErrors.projectDescription && (
-                <span style={{ color: "red" }}>
-                  {formErrors.projectDescription}
-                </span>
+                <span style={{ color: "red" }}>{formErrors.projectDescription}</span>
               )}
             </div>
             <div className="bottom-section">
-              <button className="submit" onClick={handleSubmit}>
-                submit
+              <button className="submit" type="submit">
+                Submit
               </button>
             </div>
           </div>

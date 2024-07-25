@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export default function AddClub({ onClose }) {
   const [formData, setFormData] = useState({
@@ -14,17 +13,10 @@ export default function AddClub({ onClose }) {
   });
 
   const handleChange = (e) => {
-    const { value } = e.target.value;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      clubName: value,
-      clubID: value,
-      presidentName: value,
-      secretaryName: value,
-      email: value,
-      password: value,
-      clubType: value,
-      month: value,
+      [name]: value,
     });
   };
 
@@ -70,7 +62,7 @@ export default function AddClub({ onClose }) {
       valid = false;
     }
 
-    // secretary validation
+    // secretaryName validation
     if (formData.secretaryName === "") {
       newErrors.secretaryName = "Secretary Name is required";
       valid = false;
@@ -83,31 +75,48 @@ export default function AddClub({ onClose }) {
     }
 
     // Password validation
-    if (formData.password.length == 0) {
-      newErrors.password = "passsword is required";
+    if (formData.password.length === 0) {
+      newErrors.password = "Password is required";
       valid = false;
     }
 
     // club type validation
     if (formData.clubType === "") {
-      newErrors.clubType = "select the club type";
+      newErrors.clubType = "Select the club type";
+      valid = false;
     }
 
     // month validation
     if (formData.month === "") {
-      newErrors.month = "select the month";
+      newErrors.month = "Select the month";
+      valid = false;
     }
 
     setFormErrors(newErrors);
     return valid;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (validateForm()) {
-      // Perform form submission here
-      console.log("formData");
-      // Replace console.log with your form submission logic (e.g., API call)
+      try {
+        const response = await fetch('http://localhost:3005/api/v1/club/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          console.log("Form submitted successfully");
+          onClose();
+        } else {
+          console.error("Error submitting form");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     } else {
       console.log("Form is invalid. Please check the fields.");
     }
@@ -116,11 +125,11 @@ export default function AddClub({ onClose }) {
   return (
     <React.Fragment>
       <div className="form-container">
-        <form onSubmit={validateForm}>
+        <form onSubmit={handleSubmit}>
           <div className="form-top">
             <div className="form-left">
-              <h1>add club</h1>
-              <h4>titles goes here</h4>
+              <h1>Add Club</h1>
+              <h4>Details go here</h4>
             </div>
             <div className="form-right">
               <span className="material-symbols-outlined" onClick={onClose}>
@@ -130,10 +139,11 @@ export default function AddClub({ onClose }) {
           </div>
           <div className="input-section">
             <div className="input">
-              <label htmlFor="clubName">club name:</label>
+              <label htmlFor="clubName">Club Name:</label>
               <input
                 type="text"
-                placeholder="enter club name"
+                name="clubName"
+                placeholder="Enter club name"
                 value={formData.clubName}
                 onChange={handleChange}
               />
@@ -142,10 +152,11 @@ export default function AddClub({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="clubID">club id:</label>
+              <label htmlFor="clubID">Club ID:</label>
               <input
                 type="text"
-                placeholder="enter club id"
+                name="clubID"
+                placeholder="Enter club ID"
                 value={formData.clubID}
                 onChange={handleChange}
               />
@@ -154,10 +165,11 @@ export default function AddClub({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="presidentName">president name:</label>
+              <label htmlFor="presidentName">President Name:</label>
               <input
                 type="text"
-                placeholder="enter president name"
+                name="presidentName"
+                placeholder="Enter president name"
                 value={formData.presidentName}
                 onChange={handleChange}
               />
@@ -166,10 +178,11 @@ export default function AddClub({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="secretaryName">secretary name:</label>
+              <label htmlFor="secretaryName">Secretary Name:</label>
               <input
                 type="text"
-                placeholder="enter secretary name"
+                name="secretaryName"
+                placeholder="Enter secretary name"
                 value={formData.secretaryName}
                 onChange={handleChange}
               />
@@ -178,10 +191,11 @@ export default function AddClub({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="email">emial address:</label>
+              <label htmlFor="email">Email Address:</label>
               <input
                 type="email"
-                placeholder="enter email"
+                name="email"
+                placeholder="Enter email"
                 value={formData.email}
                 onChange={handleChange}
               />
@@ -190,10 +204,11 @@ export default function AddClub({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="password">password:</label>
+              <label htmlFor="password">Password:</label>
               <input
                 type="password"
-                placeholder="enter password"
+                name="password"
+                placeholder="Enter password"
                 value={formData.password}
                 onChange={handleChange}
               />
@@ -202,7 +217,7 @@ export default function AddClub({ onClose }) {
               )}
             </div>
             <div className="input">
-              <label htmlFor="clubType">club type:</label>
+              <label htmlFor="clubType">Club Type:</label>
               <select
                 name="clubType"
                 className="clubType"
@@ -210,18 +225,19 @@ export default function AddClub({ onClose }) {
                 onChange={handleChange}
                 required
               >
-                <option>select club type</option>
-                <option value="1">interact</option>
-                <option value="2">rotaract</option>
+                <option value="">Select club type</option>
+                <option value="interact">Interact</option>
+                <option value="rotaract">Rotaract</option>
               </select>
               {formErrors.clubType && (
                 <span style={{ color: "red" }}>{formErrors.clubType}</span>
               )}
             </div>
             <div className="input">
-              <label htmlFor="clubName">month:</label>
+              <label htmlFor="month">Month:</label>
               <input
                 type="month"
+                name="month"
                 value={formData.month}
                 onChange={handleChange}
               />
@@ -231,11 +247,11 @@ export default function AddClub({ onClose }) {
             </div>
           </div>
           <div className="btn">
-            <button className="cancel" onClick={onClose}>
-              cancel
+            <button className="cancel" type="button" onClick={onClose}>
+              Cancel
             </button>
-            <button className="add" onClick={handleSubmit}>
-              add
+            <button className="add" type="submit">
+              Add
             </button>
           </div>
         </form>

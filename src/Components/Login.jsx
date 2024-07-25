@@ -7,14 +7,36 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
-    if (username === 'admin@gmail.com' && password === 'admin@123') {
-      navigate('/adminDashboard');
-    } else if (username === 'club@gmail.com' && password === 'club@123') {
-      navigate('/clubDashboard');
-    } else {
-      alert('Invalid credentials');
+    try {
+      const response = await fetch('http://localhost:3005/api/v1/logins/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+console.log(response,"ssssssss");
+      if (response.ok) {
+        
+        const data = await response.json();
+        console.log(data.result.user.role.role);
+        const  role  = data.result.user.role.role
+
+        if (role === 'ADMIN') {
+          navigate('/adminDashboard');
+        } else if (role === 'CLUB') {
+          navigate('/clubDashboard');
+        } else {
+          alert('Invalid role');
+        }
+      } else {
+        alert('Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Error during sign in:', error);
+      alert('An error occurred. Please try again.');
     }
   };
 

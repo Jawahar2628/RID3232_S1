@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./clubDashboard.css";
 import Aside from "./Aside";
-import { detailsReport } from "./detailsReport";
+import { detailsReport } from "./detailsReport"; // This can be removed if fetching from API
 import DeleteProject from "./DeleteProject";
 import UpdateProject from "./UpdateProject";
 import ExportProject from "./ExportProject";
@@ -11,6 +11,23 @@ export default function Project() {
   const [updateProject, setUpdateProject] = useState(false);
   const [deleteProject, setDeleteProject] = useState(false);
   const [exportProject, setExportProject] = useState(false);
+  const [projectDetails, setProjectDetails] = useState([]);
+
+  useEffect(() => {
+    // Fetch data from the API
+    const fetchProjectDetails = async () => {
+      try {
+        const response = await fetch('http://localhost:3005/api/v1/projects/getAll'); // Replace with your API endpoint
+        const data = await response.json();
+        console.log(data);
+        setProjectDetails(data);
+      } catch (error) {
+        console.error('Error fetching project details:', error);
+      }
+    };
+
+    fetchProjectDetails();
+  }, []);
 
   return (
     <React.Fragment>
@@ -84,8 +101,8 @@ export default function Project() {
               </tr>
             </thead>
             <tbody>
-              {detailsReport.map((eachDetail) => {
-                const { id, clubName, month } = eachDetail;
+              {projectDetails.map((eachDetail) => {
+                const { id, projectName, projectStartMonth, projectEndMonth } = eachDetail;
                 return (
                   <tr key={id}>
                     <td
@@ -93,10 +110,10 @@ export default function Project() {
                         setExportProject(true);
                       }}
                     >
-                      {clubName}
+                      {projectName}
                     </td>
-                    <td>{month}</td>
-                    <td>{month}</td>
+                    <td>{projectStartMonth}</td>
+                    <td>{projectEndMonth}</td>
                     <td>
                       <button
                         className="update"
