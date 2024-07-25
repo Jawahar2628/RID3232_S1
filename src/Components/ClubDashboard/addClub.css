@@ -71,6 +71,7 @@ form .btn button:hover {
 }
 form .btn .cancel {
   background: #f1f1f1e8;
+  color: black;
 }
 form .btn .add {
   background: aqua;

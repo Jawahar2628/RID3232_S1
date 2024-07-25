@@ -61,6 +61,7 @@
 .cancel {
   background: #f1f1f1e8;
   padding: 10px;
+  color: black;
 }
 .delete {
   background: red;

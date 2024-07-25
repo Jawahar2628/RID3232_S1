@@ -4,7 +4,7 @@ import Aside from "./Aside";
 import { detailsReport } from "./detailsReport";
 import UpdateClub from "./UpdateClub";
 import DeleteClub from "./DeleteClub";
-import './navbar.css'
+import "./navbar.css";
 import { useNavigate } from "react-router-dom";
 
 export default function Interact() {
@@ -27,9 +27,11 @@ export default function Interact() {
         <Aside />
         <div className="details-report-container">
           <div className="heading-section">
-            <div className="heading-section-left">
-              <span className="material-symbols-outlined">lab_profile</span>
-              <h1 className="heading">details report</h1>
+            <div className="heading-section-nav">
+              <div className="heading-section-left">
+                <span className="material-symbols-outlined">lab_profile</span>
+                <h1 className="heading">details report</h1>
+              </div>
             </div>
           </div>
           <table>
